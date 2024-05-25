@@ -1,0 +1,28 @@
+name: Playwright Tests
+on:
+  push: #bunlar tetikleyiciler yani hangi durumda çalışacağını belirler
+    #push yaptığımızda çalışacak
+    branches: [main, master]
+  pull_request: #pull request açıldığında çalışacak, pull request yapılmadan hemen öncesinde çalıştırır
+    branches: [main, master]
+jobs: #iş ayarları
+  test:
+    timeout-minutes: 60 #timeout süresi eğer testler 60 dakikadan fazla sürerse işlemi sonlandırır
+    runs-on: ubuntu-latest #hangi işletim sisteminde çalışacağını belirler
+    steps: #adımlar
+      - uses: actions/checkout@v4 #github deposunu çalışacak olan ubnuntu sanal makinesine klolar
+      - uses: actions/setup-node@v4 #node.js kurulumu yapar
+        with:
+          node-version: lts/* #node.js sürümü , lts versiyonunu kullanır
+      - name: Install dependencies #bağımlılıkları yükler
+        run: npm ci #npm ci komutu package-lock.json dosyasındaki bağımlılıkları yükler
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps #playwright tarayıcılarını yükler
+      - name: Run Playwright tests
+        run: npx playwright test #playwright testlerini çalıştırır
+      - uses: actions/upload-artifact@v4 #test sonuçlarını saklar
+        if: always()
+        with: #her durumda çalışır , iş başarısız olsa bile çalışır alttaki rapoorlar oluşturulur
+          name: playwright-report
+          path: playwright-report/ #raporları playwright-report klasörüne kaydeder
+          retention-days: 30
