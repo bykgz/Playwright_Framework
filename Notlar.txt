@@ -1,0 +1,200 @@
+
+//npx playwright test --headed --grep @smoke  --> sadece smoke tagli testleri calistirir
+//npx playwright test --headed --grep @smoke  --project=chromium --> sadece smoke tagli testleri calistirir ve chrome browserda acar
+//npx playwright test --headed --grep "@smoke|@tc02" --project=chromium --> smoke ve tc02 tagli testleri calistirir ve chrome browserda acar
+
+
+
+
+
+
+
+
+--> terminalde 'npm run chrome' yazarak testleri çalıştırabiliriz, package.json a 'chrome' adında script eklediğimiz için"
+
+"scripts": {
+    "chrome": "npx playwright test --project=chromium --headed day14"  --> bu şekilde yazarsak day14 deki tesstleri çalışıtracaktır
+  },
+
+---> yada  "npm run chrome day14"   yazarak çalıştırabiliriz
+---> yada  "npm run chrome day13/01-data-class-file-spec-ts"   yazarak çalıştırabiliriz
+
+
+---> npm run firefox day14
+---> npm run webkit day14
+
+--> 
+ "smoke": "npx playwright test --project=chromium --headed --grep @smoke"   böyle bir script ekledik mesela bunu 
+                                                                            çalıştırmak için için "npm run smoke" yazmamız yeterli
+
+-----------------------------------------------------
+
+retries --> test tekrarı
+
+
+npx playwright test --project=chromium --headed day14/02-test-retries.spec.ts --retries=3    ====>  consola bu şekilde yazarsak da fail olan testleri 
+                                                                                            3 kez çalıştırmuş oluruz
+
+
+
+
+
+
+===>  playwrigt config dosyası
+
+
+
+
+***görsel testingde ilk önce sayfanın bir ekran görüntüsünün olduğunu bekliyoruz 
+  ekran görüntüsü varsa tekrar çalıştırdığımızda o ekran görüntüsü ile yeni alınan ekran görüntüsünü karşılaştırıyor
+
+----------------------------------------------------------------
+
+ALLURE REPORT not :  live server da açılması gerek
+
+****allure reportu kurduktan sonra çalıştırmak için 
+
+npm install -g allure-commandline --save-dev  --> kuruyoruz
+
+npm list -g allure-commandline  --> kurulum kontrol 
+
+(optional) npm install --save-dev allure-playwright  
+
+
+allure generate allure-results --clean -o allure-report --> git bash terminalde çalıştır
+
+
+
+
+--allure-result dosyası varsa siler yoksa oluşturur
+
+allure-setup.sh adında bir dosya oluşturduk
+
+if [ -d "allure-results" ]; then
+  rm -rf allure-results
+fi
+mkdir allure-results
+
+
+bunu dosyayı çalıştırmak için --> bash allure-setup.sh
+
+
+1. adım  : bash allure-setup.sh
+
+2.adım : allure generate allure-results --clean -o allure-report
+
+
+
+
+
+ama ben her test çalıştırdığımda otomatik olarak allure-result dosyası varsa silinmesini yoksa o zaman oluşturulumasını istiyorum
+
+GitHub Copilot
+Bu durumda, testlerinizi çalıştıran scripti veya komutu biraz değiştirebiliriz.
+ Testlerinizi çalıştırmadan önce allure-results klasörünü kontrol edip silen veya oluşturan bir JavaScript dosyası oluşturabiliriz.
+
+Öncelikle, aşağıdaki kodu allureSetup.js adında bir dosya oluşturup içine ekleyin:
+
+
+const fs = require('fs');
+const path = require('path');
+
+const dir = './allure-results';
+
+if (fs.existsSync(dir)) {
+  fs.rmdirSync(dir, { recursive: true });
+}
+
+fs.mkdirSync(dir);
+
+
+Daha sonra, testlerinizi çalıştıran komutu veya scripti aşağıdaki gibi değiştirin:
+
+Bu komut, önce allureSetup.js dosyasını çalıştırır. Bu dosya, allure-results klasörünü kontrol eder, 
+varsa siler ve yeniden oluşturur. Daha sonra, npm test komutu ile testlerinizi çalıştırır.
+
+Bu şekilde, her test çalıştırdığınızda allure-results klasörü otomatik olarak silinir ve yeniden oluşturulur.
+ Bu, testlerinizi her çalıştırdığınızda temiz bir allure-results klasörüne sahip olmanızı sağlar.
+
+
+
+veya 
+
+beforeAll()  içine ekleriz 
+
+
+const fs = require('fs');
+const path = require('path');
+
+beforeAll(() => {
+  const dir = './allure-results';
+
+  if (fs.existsSync(dir)) {
+    fs.rmdirSync(dir, { recursive: true });
+  }
+
+  fs.mkdirSync(dir);
+});
+
+
+Bu kod parçacığı, beforeAll fonksiyonu içinde allure-results klasörünü kontrol eder.
+ Eğer klasör varsa, klasörü ve içindeki tüm dosyaları siler. Ardından, allure-results klasörünü oluşturur.
+
+
+
+------------------------------------------------------------------
+
+
+************  github actions ve jenkins ile ilgili içerik hazırlanabilir
+             github actions mail gönderme , veya ssh key ekleme vs
+
+
+
+
+
+
+
+
+
+
+-----------------------------------
+ soft assert
+
+import { test, expect } from '@playwright/test';
+
+let errors = [];
+
+const softAssert = (condition, errorMsg) => {
+  try {
+    expect(condition).toBeTruthy();
+  } catch (error) {
+    errors.push(errorMsg);
+  }
+};
+
+test('soft assert example', async ({ page }) => {
+  await page.goto('https://example.com');
+  const title = await page.title();
+  softAssert(title === 'Example Domain', 'Title is not correct');
+  // More test code...
+  if (errors.length > 0) {
+    throw new Error(`Soft Assert Failures: ${errors.join(', ')}`);
+  }
+});
+
+
+Bu örnekte, softAssert adlı bir yardımcı fonksiyon oluşturduk. 
+Bu fonksiyon, bir koşulun doğru olup olmadığını kontrol eder ve koşul doğru değilse bir hata mesajı ekler. 
+Testin sonunda, hata mesajları listesini kontrol ederiz ve herhangi bir hata varsa bir hata atarız. Bu, "soft assert" işlevselliğini taklit eder.
+
+Evet, doğru. Yukarıda belirttiğimiz gibi, "soft assert" kavramı, bir testin başarısız bir durumda bile devam etmesini sağlar. 
+Yani, bir "soft assert" başarısız olsa bile, test durmayacak ve sonraki adımlara devam edecektir.
+
+Ancak, testin sonunda, "soft assert" başarısızlıklarını kontrol etmeli ve bu başarısızlıkların bir sonucu olarak testi başarısız olarak işaretlemelisiniz. Bu, genellikle bir hata mesajları listesini kontrol ederek ve bu listeyi boş olup olmadığını kontrol ederek yapılır.
+
+Bu yaklaşım, birden çok koşulu aynı anda kontrol etmek istediğinizde yararlıdır. Örneğin, bir web sayfasının çeşitli özelliklerini kontrol etmek isteyebilirsiniz ve her bir özelliğin kontrolü bir "soft assert" olabilir. Bu şekilde, tüm özelliklerin kontrol edilmesini sağlayabilir 
+ve hangi özelliklerin başarısız olduğunu belirleyebilirsiniz.
+
+------------------------------------------------------
+
+
