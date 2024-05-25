@@ -15,6 +15,7 @@ test.describe("test suite ", () => {
       await page.locator(".navbar-toggler-icon").click();
     }
 
+    //
     await pm.navigateTo().openSignInPage();
     await page.locator(".auth-form");
   });
