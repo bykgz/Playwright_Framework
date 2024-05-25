@@ -142,8 +142,11 @@ Bu kod parçacığı, beforeAll fonksiyonu içinde allure-results klasörünü k
 
 
 
+------------------------------------------------------------------
 
 
+************  github actions ve jenkins ile ilgili içerik hazırlanabilir
+             github actions mail gönderme , veya ssh key ekleme vs
 
 
 
