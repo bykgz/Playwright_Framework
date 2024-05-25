@@ -19,7 +19,8 @@ jobs: #iş ayarları
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps #playwright tarayıcılarını yükler
       - name: Run Playwright tests
-        run: npx playwright test #playwright testlerini çalıştırır
+        #run: npx playwright test #playwright testlerini çalıştırır
+        run: npx playwright test --project=chromium --headed --grep @smoke #playwright testlerini çalıştırır
       - uses: actions/upload-artifact@v4 #test sonuçlarını saklar
         if: always()
         with: #her durumda çalışır , iş başarısız olsa bile çalışır alttaki rapoorlar oluşturulur
