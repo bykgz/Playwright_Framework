@@ -1,4 +1,4 @@
-import { test } from "@playwright/test";
+import { test, expect } from "@playwright/test";
 
 test.describe("test suite @regression", () => {
   //test.only --> bu sadece bu testi calistirir
@@ -8,15 +8,18 @@ test.describe("test suite @regression", () => {
   //npx playwright test --headed --grep @smoke  --project=chromium --> sadece smoke tagli testleri calistirir ve chrome browserda acar
   //npx playwright test --headed --grep "@smoke|@tc02" --project=chromium --> smoke ve tc02 tagli testleri calistirir ve chrome browserda acar
 
-  test("tesy - 1 @smoke ", async ({ page }) => {
+  test("test - 1 @smoke ", async ({ page }) => {
+    await page.goto("https://practicesoftwaretesting.com/#/");
+    await expect(page).toHaveTitle(
+      "Practice Software Testing - Toolshop - v5.0"
+    );
+  });
+
+  test("test - 2 @tc02", async ({ page }) => {
     await page.goto("https://practicesoftwaretesting.com/#/");
   });
 
-  test("tesy - 2 @tc02", async ({ page }) => {
-    await page.goto("https://practicesoftwaretesting.com/#/");
-  });
-
-  test("tesy - 3", async ({ page }) => {
+  test("test - 3", async ({ page }) => {
     await page.goto("https://practicesoftwaretesting.com/#/");
   });
 });
