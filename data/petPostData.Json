@@ -1,0 +1,16 @@
+{
+  "id": 6161,
+  "category": {
+    "id": 0,
+    "name": "KÖPEK"
+  },
+  "name": "pamuk",
+  "photoUrls": ["string"],
+  "tags": [
+    {
+      "id": 0,
+      "name": "sibirya kurdu"
+    }
+  ],
+  "status": "satılık değil"
+}

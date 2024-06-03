@@ -1,0 +1,13 @@
+{
+  "firstName": "zeynep",
+  "lastName": "kaya",
+  "birthdate": "1995-01-01",
+  "email": "zeynep@fake.com",
+  "phone": "8005555555",
+  "street1": "1 Main St.",
+  "street2": "Apartment A",
+  "city": "Izmir",
+  "stateProvince": "KS",
+  "postalCode": "12345",
+  "country": "TR"
+}

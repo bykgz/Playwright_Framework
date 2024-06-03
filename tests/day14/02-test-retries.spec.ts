@@ -17,7 +17,7 @@ test.describe("test suite ", () => {
   test("tesy - 2", async ({ page }) => {
     await page.goto("https://practicesoftwaretesting.com/#/");
     await expect(page).toHaveTitle(
-      "Practice Software Testing - Toolshop - v5.1"
+      "Practice Software Testing - Toolshop - v5.0"
     );
   });
 
